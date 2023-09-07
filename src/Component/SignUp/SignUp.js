@@ -5,10 +5,26 @@ import auth from '../../firebase.init';
 
 const SignUp = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [createUserWithEmailAndPassword, user] = useCreateUserWithEmailAndPassword(auth);
+
+    const [createUserWithEmailAndPassword, user, laoding] = useCreateUserWithEmailAndPassword(auth);
     const handleSignUp = (data) => {
         console.log(data)
         createUserWithEmailAndPassword(data.mail, data.password)
+    }
+   
+
+    if (user?.user?.email) {
+        let userInfoArray = []
+        const userId = user?.user?.uid;
+        const email = user?.user?.email;
+        const data = { users: userId, email: email }
+        const finalData= userInfoArray.push(data);
+        const processData = JSON.stringify(userInfoArray);
+        localStorage.setItem("userInfo", processData)
+    }
+
+    if (laoding) {
+        return <p>Loading ...</p>
     }
 
     return (

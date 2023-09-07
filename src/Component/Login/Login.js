@@ -19,7 +19,7 @@ const Login = () => {
 
     }
     if(user){
-        navigate('/')
+        navigate('/home')
     }
 
     if (loading) {

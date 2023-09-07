@@ -3,6 +3,7 @@ import './App.css';
 import Login from './Component/Login/Login';
 import SignUp from './Component/SignUp/SignUp';
 import LoginSignUp from './Component/LoginSignUp/LoginSignUp';
+import Home from './Component/Home/Home';
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path='login' element={<Login></Login>}></Route>
         <Route path='signUp' element={<SignUp></SignUp>}></Route>
+        <Route path='home' element={<Home></Home>}></Route>
       </Routes>
     </div>
   );
