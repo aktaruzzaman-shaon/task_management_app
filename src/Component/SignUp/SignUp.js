@@ -1,9 +1,15 @@
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import auth from '../../firebase.init';
 
 const SignUp = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const handleSignUp = data => console.log(data);
+    const [createUserWithEmailAndPassword, user] = useCreateUserWithEmailAndPassword(auth);
+    const handleSignUp = (data) => {
+        console.log(data)
+        createUserWithEmailAndPassword(data.mail, data.password)
+    }
 
     return (
         <div>
@@ -12,8 +18,8 @@ const SignUp = () => {
             {/* SingUp from */}
 
             <form onSubmit={handleSubmit(handleSignUp)}>
-                <input defaultValue="mail" {...register("mail")} />
-                <input {...register("password", { required: true })} />
+                <input type='text' placeholder="Mail" {...register("mail")} />
+                <input type='number' placeholder='Password' {...register("password", { required: true })} />
                 {errors.password && <span>This field is required</span>}
                 <input type="submit" value="SignUp" />
             </form>
