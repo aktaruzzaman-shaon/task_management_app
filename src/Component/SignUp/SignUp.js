@@ -1,8 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import auth from '../../firebase.init';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { async } from '@firebase/util';
 
 const SignUp = () => {
 
@@ -10,39 +10,23 @@ const SignUp = () => {
     const [singleUser, setSingleUser] = useState({});
 
     const { register, handleSubmit, formState: { errors } } = useForm();
-
-    const [createUserWithEmailAndPassword, user, laoding] = useCreateUserWithEmailAndPassword(auth);
-
-
-    const id = user?.user?.uid;
-    const mail = user?.user?.email;
-    const data = { "id": id, "mail": mail }
-
-    const a = () => {
-        setSingleUser(data);
-    }
+    const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
 
     useEffect(() => {
         setUserArray(
-            [...userArray, singleUser]
+            (defaultvalue) => {
+                return [...defaultvalue, singleUser];
+            }
         );
-        
-
     }, [singleUser])
-    
-    console.log(userArray)
 
-    const handleSignUp = (data) => {
-        setSingleUser(data)
-        console.log(data)
-        createUserWithEmailAndPassword(data.mail, data.password)
-    }
+    console.log(userArray)
 
     localStorage.setItem('users', JSON.stringify(userArray))
 
-
-    if (laoding) {
-        return <p>Loading ...</p>
+    const handleSignUp = async (data) => {
+        setSingleUser({ mail: data.mail, userId: new Date().getTime().toString() })
+        createUserWithEmailAndPassword(data.mail, data.password)
     }
 
     return (
@@ -52,10 +36,12 @@ const SignUp = () => {
             {/* SingUp from */}
 
             <form onSubmit={handleSubmit(handleSignUp)}>
-                <input type='text' placeholder="Mail" {...register("mail")} />
+                <input type='text' placeholder="Mail" {...register("mail", { required: true })} />
                 <input type='number' placeholder='Password' {...register("password", { required: true })} />
+                <br />
                 {errors.password && <span>This field is required</span>}
-                <input type="submit" value="SignUp" />
+                {errors.mail && <span>This field is required</span>}
+                <input type="submit" value="SignUp" className='btn bg-slate-500' />
             </form>
         </div>
     );
